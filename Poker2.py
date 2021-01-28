@@ -68,7 +68,40 @@ def step(x, _list):
             return False
     else:
         raise ValueError
-        
+
+def main():
+        global desktop, one, another, index, cards
+        while True:
+            try:
+            
+                x = one.pop(0)
+                # print("x=", dCardsToWords[x], end=" ")
+                while step(x, "one"):
+                    x = one.pop(0)
+                    # print("x=", dCardsToWords[x], end=" ")
+
+                y = another.pop(0)
+                # print("y=", dCardsToWords[y], end=" ")
+                while step(y, "another"):
+                    y = another.pop(0)
+                    # print("y=", dCardsToWords[y], end=" ")
+
+                # print(desktop, "", len(one), "", len(another))
+                index += 1
+            except IndexError:
+                break
+            if index > 1000:
+                break
+        if another == []:
+            # one won
+            return [1, index]
+        elif one == []:
+            # another won
+            return [2, index]
+        else:
+            # no one won
+            return [0, index]
+
 cards = [1,2,3,4,5,6,7,8,9,10,11,12,13] * 4 + [14,15]
 
 index = 0
@@ -76,8 +109,6 @@ index = 0
 random.seed(time.time())
 random.shuffle(cards)
 
-#one = cards[:27].copy()
-#another = cards[27:].copy()
 one = []
 another = []
 
@@ -98,43 +129,37 @@ while True:
 print("one=", one)
 print("another=", another)
 
+one_copy = one[:]
+another_copy = another[:]
 
-desktop = []
+total_steps = 0
+total_games = 0
+total_one_wins = 0
+total_another_wins = 0
 
-def main():
-    global desktop, one, another, index, cards
-    while True:
-        try:
-        
-            x = one.pop(0)
-            print("x=", dCardsToWords[x], end=" ")
-            while step(x, "one"):
-                x = one.pop(0)
-                print("x=", dCardsToWords[x], end=" ")
+while True:
 
-            y = another.pop(0)
-            print("y=", dCardsToWords[y], end=" ")
-            while step(y, "another"):
-                y = another.pop(0)
-                print("y=", dCardsToWords[y], end=" ")
+    one = one_copy[:]
+    another = another_copy[:]
+    index = 0
+    random.shuffle(another)
+    desktop = []
 
-            print(desktop, "", len(one), "", len(another))
-            index += 1
-        except IndexError:
-            break
-        if index > 1000:
-            break
-        #1/0
-    print()
-    print("♂"*20)
-    if another == []:
-        print(index, "one")
-    elif one == []:
-        print(index, "another")
-    else:
-        print("平")
-    print("♂"*20)
-    input("按回车继续. . .")
+    stat, n_steps = main()
 
-if __name__ == "__main__":
-    main()
+    if stat == 0:
+        total_steps += n_steps
+        total_one_wins += 1
+        total_another_wins += 1
+
+    elif stat == 1:
+        total_steps += n_steps
+        total_one_wins += 1
+
+    elif stat == 2:
+        total_steps += n_steps
+        total_another_wins += 1
+    
+    total_games += 1
+
+    print("我方胜率：", total_one_wins / (total_games), " 平均对局长度：", total_steps / total_games, " 计算量：", total_steps, end="\r")

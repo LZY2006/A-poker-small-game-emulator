@@ -1,4 +1,3 @@
-##import numba as nb
 # A 2 3 4 5 6 7 8 9 10 J  Q  K  JOKER JOKER
 # 1 2 3 4 5 6 7 8 9 10 11 12 13  14    15
 dWordsToCards = {"A":1,
@@ -19,8 +18,6 @@ dWordsToCards = {"A":1,
 dCardsToWords = {}
 for i,j in dWordsToCards.items():
     dCardsToWords[j] = i
-##print(dCardsToWords)
-
 
 import random
 import time
@@ -126,6 +123,7 @@ while True:
         break
     except Exception as e:
         print("发生了一个错误。", repr(e))
+        cards = [1,2,3,4,5,6,7,8,9,10,11,12,13] * 4 + [14,15]
 print("one=", one)
 print("another=", another)
 
@@ -147,19 +145,19 @@ while True:
 
     stat, n_steps = main()
 
+    total_steps += n_steps
+
     if stat == 0:
-        total_steps += n_steps
         total_one_wins += 1
         total_another_wins += 1
 
     elif stat == 1:
-        total_steps += n_steps
         total_one_wins += 1
 
     elif stat == 2:
-        total_steps += n_steps
         total_another_wins += 1
     
     total_games += 1
 
-    print("我方胜率：", total_one_wins / (total_games), " 平均对局长度：", total_steps / total_games, " 计算量：", total_steps, end="\r")
+    if random.randint(1, 10) == 1:
+        print("我方胜率：", total_one_wins / (total_games) * 100, " 平均对局长度：%.2f" %( total_steps / total_games ), " 计算量：", total_steps, end="\r")
